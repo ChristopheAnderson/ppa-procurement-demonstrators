@@ -256,14 +256,29 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.removeChild(link);
   });
 
-  // Sync Registry simulated button
-  document.getElementById("btn-sync-registry")?.addEventListener("click", () => {
+  // Sync Registry with Render API or local simulated animation
+  document.getElementById("btn-sync-registry")?.addEventListener("click", async () => {
     const btn = document.getElementById("btn-sync-registry");
     const origHtml = btn.innerHTML;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Syncing 2,048 Entities...`;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Syncing with Render API...`;
     btn.disabled = true;
+
+    if (window.ppaApi && window.ppaApi.isOnline) {
+      const liveEntities = await window.ppaApi.getEntities();
+      if (liveEntities && liveEntities.length > 0) {
+        btn.innerHTML = `<i class="bi bi-cloud-check-fill me-1"></i> Live Render Sync (${liveEntities.length} Entities)`;
+        btn.classList.replace("btn-outline-secondary", "btn-success");
+        setTimeout(() => {
+          btn.innerHTML = origHtml;
+          btn.classList.replace("btn-success", "btn-outline-secondary");
+          btn.disabled = false;
+        }, 3000);
+        return;
+      }
+    }
+
     setTimeout(() => {
-      btn.innerHTML = `<i class="bi bi-check2 me-1"></i> Synchronized!`;
+      btn.innerHTML = `<i class="bi bi-check2 me-1"></i> Synchronized (2,048 Entities)`;
       btn.classList.replace("btn-outline-secondary", "btn-success");
       setTimeout(() => {
         btn.innerHTML = origHtml;

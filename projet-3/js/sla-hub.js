@@ -160,8 +160,30 @@ document.addEventListener("DOMContentLoaded", () => {
   renderOwasp();
   updateManDaysTotal();
 
+  // Try fetching live incidents from Render API if online
+  if (window.ppaApi) {
+    window.ppaApi.onStatusChange(async (status) => {
+      if (status.online) {
+        const liveIncidents = await window.ppaApi.getIncidents();
+        if (liveIncidents && Array.isArray(liveIncidents) && liveIncidents.length > 0) {
+          INCIDENTS_DATA = liveIncidents.map(i => ({
+            ref: i.reference_no,
+            title: i.title,
+            priority: i.priority,
+            sla_target: i.sla_target,
+            status: i.status,
+            mandays: parseFloat(i.mandays_consumed) || 0.5,
+            subsystem: i.subsystem
+          }));
+          renderIncidents();
+          updateManDaysTotal();
+        }
+      }
+    });
+  }
+
   // New Incident Form Submission
-  document.getElementById("form-new-incident")?.addEventListener("submit", (e) => {
+  document.getElementById("form-new-incident")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const title = document.getElementById("inc-title").value;
     const priority = document.getElementById("inc-priority").value;
@@ -175,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const nextId = INCIDENTS_DATA.length + 1;
     const ref = `REQ-2026-${String(nextId).padStart(3, '0')}`;
 
-    INCIDENTS_DATA.unshift({
+    const newInc = {
       ref,
       title,
       priority,
@@ -183,10 +205,24 @@ document.addEventListener("DOMContentLoaded", () => {
       status: "In Progress",
       mandays,
       subsystem
-    });
+    };
 
+    INCIDENTS_DATA.unshift(newInc);
     renderIncidents();
     updateManDaysTotal();
+
+    // Async POST to Render backend if online
+    if (window.ppaApi && window.ppaApi.isOnline) {
+      window.ppaApi.postIncident({
+        reference_no: ref,
+        title: title,
+        priority: priority,
+        sla_target: sla,
+        status: "In Progress",
+        mandays_consumed: mandays,
+        subsystem: subsystem
+      });
+    }
 
     // Close modal
     const modalEl = document.getElementById("newIncidentModal");

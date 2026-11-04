@@ -49,6 +49,10 @@
         </div>
       </div>
       <div class="d-flex align-items-center gap-3">
+        <div id="backend-status-pill" class="badge rounded-pill bg-dark border border-secondary text-light px-3 py-1 cursor-pointer" onclick="showBackendConfigModal()" title="Cliquer pour configurer l'URL API">
+          <span class="spinner-grow spinner-grow-sm text-warning me-1" role="status" style="width: 0.6rem; height: 0.6rem;"></span>
+          <span id="backend-status-text">Backend: Connexion...</span>
+        </div>
         <div class="d-flex align-items-center bg-dark bg-opacity-50 px-3 py-1 rounded-pill border border-secondary border-opacity-25 text-white small">
           <span class="text-success me-2">&bull; Active Role:</span>
           <strong id="current-active-role" class="text-warning">PPA_SUPER_ADMIN</strong>
@@ -197,6 +201,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api-client.js"></script>
   <script src="js/entities-app.js"></script>
 </body>
 </html>

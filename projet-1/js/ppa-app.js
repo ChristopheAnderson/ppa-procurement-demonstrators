@@ -231,18 +231,30 @@ function renderTenders(tenders) {
   });
 }
 
-// Show OCDS Modal
-function showOcdsModal(tender) {
+// Global active tenders data source (populated from Render API or default dataset)
+let ACTIVE_TENDERS = [...TENDERS_DATA];
+
+// Show OCDS Modal (with Render API fetch or local fallback)
+async function showOcdsModal(tender) {
   const modalEl = document.getElementById("ocdsModal");
   const modal = new bootstrap.Modal(modalEl);
   const ocidSpan = document.getElementById("ocds-modal-ocid");
   const jsonViewer = document.getElementById("ocds-json-viewer");
 
-  const ocdsData = generateOCDSRelease(tender);
   if (ocidSpan) ocidSpan.textContent = `OCID: ${tender.ocds_ocid}`;
-  if (jsonViewer) jsonViewer.textContent = JSON.stringify(ocdsData, null, 2);
-
+  if (jsonViewer) jsonViewer.textContent = "// Chargement du release OCDS 1.1 en direct...";
   modal.show();
+
+  let ocdsData = null;
+  if (window.ppaApi && window.ppaApi.isOnline) {
+    ocdsData = await window.ppaApi.getOcdsRelease(tender.ocds_ocid);
+  }
+  
+  if (!ocdsData) {
+    ocdsData = generateOCDSRelease(tender);
+  }
+
+  if (jsonViewer) jsonViewer.textContent = JSON.stringify(ocdsData, null, 2);
 }
 
 // Search & Filter Logic
@@ -251,7 +263,7 @@ function applyFilters() {
   const selectedCat = document.getElementById("category-select")?.value || "ALL";
   const selectedStatus = document.getElementById("status-select")?.value || "ALL";
 
-  const filtered = TENDERS_DATA.filter(t => {
+  const filtered = ACTIVE_TENDERS.filter(t => {
     const matchSearch = !searchTerm || 
       t.title.toLowerCase().includes(searchTerm) ||
       t.reference_no.toLowerCase().includes(searchTerm) ||
@@ -302,9 +314,26 @@ function setupAccessibilityTools() {
 }
 
 // Initialize on DOM Ready
-document.addEventListener("DOMContentLoaded", () => {
-  renderTenders(TENDERS_DATA);
+document.addEventListener("DOMContentLoaded", async () => {
+  renderTenders(ACTIVE_TENDERS);
   setupAccessibilityTools();
+
+  // Try fetching live tenders from Render API
+  if (window.ppaApi) {
+    window.ppaApi.onStatusChange(async (status) => {
+      if (status.online) {
+        const liveTenders = await window.ppaApi.getTenders();
+        if (liveTenders && Array.isArray(liveTenders) && liveTenders.length > 0) {
+          ACTIVE_TENDERS = liveTenders;
+          renderTenders(ACTIVE_TENDERS);
+          const countEl = document.getElementById("results-count-text");
+          if (countEl) {
+            countEl.innerHTML = `Showing ${ACTIVE_TENDERS.length} tenders <span class="badge bg-success-subtle text-success ms-1"><i class="bi bi-cloud-check"></i> Render Live API</span>`;
+          }
+        }
+      }
+    });
+  }
 
   // Search input events
   const searchInput = document.getElementById("search-input");
