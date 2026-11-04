@@ -64,3 +64,4 @@ The demonstration suite is deployed and accessible online:
 - **Portfolio:** [https://christopher-portofolio.vercel.app/](https://christopher-portofolio.vercel.app/)
 - **LinkedIn:** [linkedin.com/in/christophe-wavoeke-ba0b04249](https://www.linkedin.com/in/christophe-wavoeke-ba0b04249)
 - **GitHub:** [https://github.com/ChristopheAnderson](https://github.com/ChristopheAnderson)
+
