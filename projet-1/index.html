@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Public Procurement Regulatory Authority (PPA) — National e-Procurement Portal</title>
+  
+  <!-- Premium Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Custom Modern Styles -->
+  <link rel="stylesheet" href="css/ppa-portal.css">
+</head>
+<body>
+
+  <!-- Top Proof-of-Concept Banner for Evaluation Committee -->
+  <div class="poc-banner py-2 px-3">
+    <div class="container-fluid d-flex flex-wrap justify-content-between align-items-center gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="poc-badge"><i class="bi bi-cpu-fill"></i> TECHNICAL PROOF-OF-CONCEPT</span>
+        <span class="d-none d-md-inline text-slate-300">
+          Tailor-made demonstrator developed by <strong>Ing. Christophe WAVOEKE</strong> in response to <strong>Expertise France (Ref. 2026/LEIWDPPA/16475)</strong>
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1">
+          <i class="bi bi-shield-check"></i> Standard OCDS 1.1 Compliant
+        </span>
+        <span class="badge bg-secondary-subtle text-light border border-secondary px-2 py-1">
+          <i class="bi bi-universal-access"></i> WCAG 2.1 AA
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessibility & Language Tools Bar -->
+  <div class="accessibility-bar py-1 px-3">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <span class="small fw-semibold me-1 text-light"><i class="bi bi-sliders"></i> Display:</span>
+        <button id="btn-toggle-contrast" class="btn btn-sm btn-outline-light py-0 px-2" aria-label="Toggle High Contrast Mode">
+          <i class="bi bi-circle-half"></i> Contrast
+        </button>
+        <button id="btn-font-increase" class="btn btn-sm btn-outline-light py-0 px-2" aria-label="Increase text size">A+</button>
+        <button id="btn-font-decrease" class="btn btn-sm btn-outline-light py-0 px-2" aria-label="Decrease text size">A-</button>
+        <button id="btn-font-reset" class="btn btn-sm btn-outline-light py-0 px-2" aria-label="Reset text size">Reset</button>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span class="small text-secondary d-none d-lg-inline">Public Procurement Modernization Framework</span>
+        <div class="lang-switch small">
+          <span class="badge bg-light text-dark fw-bold me-1">EN</span>
+          <a href="#" class="text-secondary text-decoration-none me-2">FR</a>
+          <a href="#" class="text-secondary text-decoration-none" dir="rtl">عربي (i18n ready)</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar -->
+  <nav class="ppa-navbar py-3">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <div class="brand-icon-box me-3">
+            <i class="bi bi-building-check"></i>
+          </div>
+          <div>
+            <div class="brand-title">PPA &bull; Public Procurement Regulatory Authority</div>
+            <div class="brand-subtitle">National e-Procurement Portal & Public Tenders Directory</div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="#tenders-section" class="btn btn-outline-ppa btn-sm">
+            <i class="bi bi-search me-1"></i> Browse Tenders
+          </a>
+          <button class="btn btn-primary-ppa btn-sm" id="btn-open-ocds-schema">
+            <i class="bi bi-braces-asterisk me-1"></i> OCDS API Endpoint
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section with Live Metrics -->
+  <section class="hero-section py-5">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill bg-primary-subtle text-primary small fw-semibold">
+            <i class="bi bi-patch-check-fill"></i> Open-Source Architecture &bull; Laravel 11 & PostgreSQL Engine
+          </div>
+          <h1 class="hero-title mb-3">
+            Enhancing Integrity & Transparency in <span class="hero-highlight">Public Procurement Systems</span>
+          </h1>
+          <p class="text-secondary lead mb-4" style="font-size: 1.05rem;">
+            Central hub providing automated, open-access public procurement notices, bidding specifications, evaluation reports, and live data feeds compliant with international governance standards across 2,000+ institutional contracting bodies.
+          </p>
+          <div class="d-flex flex-wrap gap-3">
+            <a href="#tenders-section" class="btn btn-primary-ppa">
+              <i class="bi bi-funnel-fill me-1"></i> Explore Current Tenders
+            </a>
+            <a href="../projet-2/" class="btn btn-outline-ppa" target="_blank">
+              <i class="bi bi-people-fill me-1"></i> Entities & RBAC Hub (Projet 2) &rarr;
+            </a>
+            <a href="../projet-3/" class="btn btn-outline-ppa" target="_blank">
+              <i class="bi bi-shield-lock-fill me-1"></i> Cyber & SLA Hub (Projet 3) &rarr;
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="row g-3">
+            <div class="col-6 col-lg-12">
+              <div class="kpi-card-hero">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-muted small fw-semibold text-uppercase">Active Public Tenders</div>
+                    <div class="h3 fw-bold text-navy my-1" id="stat-active-count">5 Active</div>
+                  </div>
+                  <div class="text-primary fs-3"><i class="bi bi-file-earmark-text"></i></div>
+                </div>
+                <div class="small text-success mt-1"><i class="bi bi-broadcast"></i> Live published notices</div>
+              </div>
+            </div>
+            <div class="col-6 col-lg-12">
+              <div class="kpi-card-hero">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="text-muted small fw-semibold text-uppercase">Contracting Entities</div>
+                    <div class="h3 fw-bold text-navy my-1">2,000+</div>
+                  </div>
+                  <div class="text-success fs-3"><i class="bi bi-bank2"></i></div>
+                </div>
+                <div class="small text-muted mt-1"><i class="bi bi-check-circle-fill text-primary"></i> Central & Local coverage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter Controls -->
+  <main class="container my-5" id="tenders-section">
+    <div class="search-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 fw-bold text-navy mb-0"><i class="bi bi-funnel text-primary me-2"></i> Multi-Criteria Search & Filtering</h2>
+        <span class="small text-muted" id="results-count-text">Showing 5 tenders</span>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-5">
+          <label for="search-input" class="form-label small fw-semibold text-secondary">Keywords, Title, Reference No.</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" id="search-input" class="form-control border-start-0" placeholder="e.g. Modernization, Infrastructure, Solar, Audit...">
+          </div>
+        </div>
+        <div class="col-md-3">
+          <label for="category-select" class="form-label small fw-semibold text-secondary">Procurement Category</label>
+          <select id="category-select" class="form-select">
+            <option value="ALL">All Categories</option>
+            <option value="Services">Services & IT Consultancy</option>
+            <option value="Works">Civil Works & Infrastructure</option>
+            <option value="Supplies">Supplies & Equipment</option>
+            <option value="Consultancy">Advisory & Institutional Audit</option>
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label for="status-select" class="form-label small fw-semibold text-secondary">Tender Status</label>
+          <select id="status-select" class="form-select">
+            <option value="ALL">All Statuses</option>
+            <option value="Active" selected>Active Only</option>
+            <option value="Under Evaluation">Under Evaluation</option>
+            <option value="Awarded">Awarded</option>
+          </select>
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+          <button id="btn-reset-filters" class="btn btn-outline-ppa w-100">
+            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tenders Feed Container -->
+    <div id="tenders-container">
+      <!-- Injected via ppa-app.js -->
+    </div>
+  </main>
+
+  <!-- OCDS JSON Modal -->
+  <div class="modal fade" id="ocdsModal" tabindex="-1" aria-labelledby="ocdsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow-lg">
+        <div class="modal-header bg-navy text-white">
+          <h5 class="modal-title h6 fw-bold" id="ocdsModalLabel">
+            <i class="bi bi-code-slash text-warning me-2"></i> Open Contracting Data Standard (OCDS 1.1) Release
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small text-muted font-monospace" id="ocds-modal-ocid">ocds-213qz4-PPA-2026-IT-004</span>
+            <button class="btn btn-sm btn-outline-primary" id="btn-copy-json">
+              <i class="bi bi-clipboard me-1"></i> Copy JSON
+            </button>
+          </div>
+          <pre class="bg-dark text-success p-3 rounded font-monospace small mb-0" style="max-height: 480px; overflow-y: auto;" id="ocds-json-viewer"></pre>
+        </div>
+        <div class="modal-footer bg-white border-top">
+          <span class="small text-muted me-auto"><i class="bi bi-info-circle"></i> Schema verified against OCDS 1.1.5 specification standard</span>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-top py-4 mt-5">
+    <div class="container text-center text-muted small">
+      <div class="mb-2 fw-semibold text-navy">Public Procurement Regulatory Authority &bull; Modern e-Procurement Architecture</div>
+      <div>Designed & Developed by <strong>Ing. Christophe WAVOEKE</strong> &bull; Technical Demonstration for Expertise France Assignment</div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Application Logic -->
+  <script src="js/ppa-app.js"></script>
+</body>
+</html>

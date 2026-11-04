@@ -1,0 +1,187 @@
+:root {
+  --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  --primary-950: #0a0f1d;
+  --primary-900: #0f172a;
+  --primary-800: #1e293b;
+  --primary-700: #334155;
+  
+  --cyber-blue: #0284c7;
+  --cyber-teal: #0d9488;
+  --cyber-cyan: #06b6d4;
+  --cyber-violet: #7c3aed;
+  
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  
+  --surface-bg: #f8fafc;
+  --surface-card: #ffffff;
+  --surface-border: #e2e8f0;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--surface-bg);
+  color: var(--primary-900);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Proof of Concept Bar */
+.poc-banner {
+  background: linear-gradient(90deg, #0a0f1d 0%, #1e1b4b 50%, #0a0f1d 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  letter-spacing: 0.3px;
+}
+
+.poc-badge {
+  background: linear-gradient(135deg, #0284c7 0%, #7c3aed 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.72rem;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Header */
+.hub-header {
+  background: var(--primary-900);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.hub-logo-box {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+}
+
+/* KPI Cards */
+.kpi-card {
+  background: #ffffff;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.kpi-card.kpi-danger::before { background: var(--accent-rose); }
+.kpi-card.kpi-primary::before { background: var(--cyber-blue); }
+.kpi-card.kpi-success::before { background: var(--accent-emerald); }
+.kpi-card.kpi-warning::before { background: var(--accent-amber); }
+
+.kpi-title {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--primary-700);
+  margin-bottom: 4px;
+}
+
+.kpi-number {
+  font-weight: 800;
+  font-size: 1.85rem;
+  letter-spacing: -0.5px;
+  color: var(--primary-900);
+}
+
+/* Table */
+.incidents-table {
+  font-size: 0.88rem;
+}
+
+.incidents-table th {
+  background: #f8fafc;
+  color: var(--primary-700);
+  font-weight: 700;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 14px;
+}
+
+.incidents-table td {
+  padding: 14px;
+  vertical-align: middle;
+}
+
+/* Checklist Item */
+.checklist-box {
+  background: #ffffff;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  transition: background 0.15s ease;
+}
+
+.checklist-box:hover {
+  background: #f8fafc;
+}
+
+/* OWASP Item Card */
+.owasp-card {
+  background: #ffffff;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+
+/* Buttons */
+.btn-cyber {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border: none;
+  font-weight: 600;
+  font-size: 0.88rem;
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-cyber:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
