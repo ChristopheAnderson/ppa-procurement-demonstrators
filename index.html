@@ -658,9 +658,10 @@
           pillText.textContent = `Render API: Live (${status.latency}ms)`;
         } else {
           dot.style.background = "#f59e0b";
-          pillText.textContent = `Render: Standby (Mode Local)`;
+          pillText.textContent = `Render: Standby (${status.error || 'Mode Local'})`;
         }
       });
+      window.ppaApi.checkHealth();
     });
   </script>
 

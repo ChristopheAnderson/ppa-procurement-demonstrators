@@ -11,14 +11,25 @@ const PPA_CONFIG = {
   localBackendUrl: "http://localhost:8000",
   // Current active URL stored in localStorage or default
   get activeBackendUrl() {
-    return localStorage.getItem("PPA_RENDER_BACKEND_URL") || this.defaultBackendUrl;
+    try {
+      const saved = localStorage.getItem("PPA_RENDER_BACKEND_URL");
+      // Safety check: if on HTTPS, avoid mixed content blocked http://
+      if (saved && typeof location !== 'undefined' && location.protocol === 'https:' && saved.startsWith('http://localhost')) {
+        return this.defaultBackendUrl;
+      }
+      return (saved && saved.trim()) ? saved.trim().replace(/\/+$/, '') : this.defaultBackendUrl;
+    } catch (e) {
+      return this.defaultBackendUrl;
+    }
   },
   set activeBackendUrl(url) {
-    if (!url) {
-      localStorage.removeItem("PPA_RENDER_BACKEND_URL");
-    } else {
-      localStorage.setItem("PPA_RENDER_BACKEND_URL", url.trim().replace(/\/+$/, ''));
-    }
+    try {
+      if (!url) {
+        localStorage.removeItem("PPA_RENDER_BACKEND_URL");
+      } else {
+        localStorage.setItem("PPA_RENDER_BACKEND_URL", url.trim().replace(/\/+$/, ''));
+      }
+    } catch (e) {}
   }
 };
 
@@ -29,19 +40,22 @@ class PpaApiClient {
     this.latencyMs = 0;
     this.statusListeners = [];
     this.serverDetails = null;
+    this.checkingPromise = null;
     
     // Auto check on load
     if (typeof window !== "undefined") {
-      setTimeout(() => this.checkHealth(), 100);
+      this.checkHealth();
+      window.addEventListener("DOMContentLoaded", () => this.checkHealth());
+      window.addEventListener("load", () => this.checkHealth());
     }
   }
 
   onStatusChange(callback) {
     this.statusListeners.push(callback);
     // If we already know the status, invoke immediately
-    if (this.isOnline !== undefined) {
+    if (this.isOnline) {
       callback({
-        online: this.isOnline,
+        online: true,
         latency: this.latencyMs,
         url: this.baseUrl,
         server: this.serverDetails
@@ -68,67 +82,74 @@ class PpaApiClient {
   }
 
   async checkHealth() {
-    const startTime = performance.now();
-    try {
-      const controller = new AbortController();
-      // Render free tier spin-up can take ~30s on cold start; use 6s timeout for check
-      const timeoutId = setTimeout(() => controller.abort(), 6000);
+    if (this.checkingPromise) return this.checkingPromise;
 
-      const resp = await fetch(`${this.baseUrl}/api/v1/health`, {
-        signal: controller.signal,
-        headers: { 'Accept': 'application/json' }
-      });
-      clearTimeout(timeoutId);
+    this.checkingPromise = (async () => {
+      const startTime = performance.now();
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 7000);
 
-      if (resp.ok) {
-        const data = await resp.json();
-        this.latencyMs = Math.round(performance.now() - startTime);
-        this.isOnline = true;
-        this.serverDetails = data;
+        const resp = await fetch(`${this.baseUrl}/api/v1/health`, {
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' },
+          mode: 'cors'
+        });
+        clearTimeout(timeoutId);
+
+        if (resp.ok) {
+          const data = await resp.json();
+          this.latencyMs = Math.round(performance.now() - startTime);
+          this.isOnline = true;
+          this.serverDetails = data;
+          const statusObj = {
+            online: true,
+            latency: this.latencyMs,
+            service: data.service,
+            database: data.database,
+            version: data.version,
+            timestamp: data.timestamp,
+            url: this.baseUrl
+          };
+          this.notifyStatus(statusObj);
+          this.updatePillUI(true, this.latencyMs);
+          return true;
+        } else {
+          throw new Error(`HTTP ${resp.status}`);
+        }
+      } catch (err) {
+        this.isOnline = false;
+        this.serverDetails = null;
+        const msg = err.name === 'AbortError' ? 'Serveur en réveil' : 'Mode Local Autonome';
         this.notifyStatus({
-          online: true,
-          latency: this.latencyMs,
-          service: data.service,
-          database: data.database,
-          version: data.version,
-          timestamp: data.timestamp,
+          online: false,
+          latency: 0,
+          error: msg,
           url: this.baseUrl
         });
-        this.updatePillUI(true, this.latencyMs);
-        return true;
-      } else {
-        throw new Error(`HTTP ${resp.status}`);
+        this.updatePillUI(false, 0, msg);
+        return false;
+      } finally {
+        this.checkingPromise = null;
       }
-    } catch (err) {
-      this.isOnline = false;
-      this.serverDetails = null;
-      const isAbort = err.name === 'AbortError';
-      const msg = isAbort ? 'Connexion en cours / Serveur en réveil' : 'Mode Démo Autonome (Hors-ligne)';
-      this.notifyStatus({
-        online: false,
-        latency: 0,
-        error: msg,
-        url: this.baseUrl
-      });
-      this.updatePillUI(false, 0, msg);
-      return false;
-    }
+    })();
+
+    return this.checkingPromise;
   }
 
   // Update UI pill if present on page
   updatePillUI(isOnline, latency, errorMsg) {
     const pill = document.getElementById("backend-status-pill");
-    const text = document.getElementById("backend-status-text");
-    if (!pill || !text) return;
+    if (!pill) return;
 
     if (isOnline) {
       pill.className = "badge rounded-pill bg-success-subtle text-success border border-success-subtle px-3 py-1 cursor-pointer";
       pill.style.cursor = "pointer";
-      text.innerHTML = `<i class="bi bi-cloud-check-fill text-success me-1"></i> Render API: Live (${latency}ms)`;
+      pill.innerHTML = `<i class="bi bi-cloud-check-fill text-success me-1"></i> <span id="backend-status-text">Render API: Live (${latency}ms)</span>`;
     } else {
       pill.className = "badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-1 cursor-pointer";
       pill.style.cursor = "pointer";
-      text.innerHTML = `<i class="bi bi-hdd-network text-warning me-1"></i> Mode Démo Local (Render Standby)`;
+      pill.innerHTML = `<i class="bi bi-hdd-network text-warning me-1"></i> <span id="backend-status-text">Mode Local (${errorMsg || 'Standby'})</span>`;
     }
   }
 
@@ -291,7 +312,7 @@ window.runQuickConfigTest = async function() {
   if (ok && window.ppaApi.serverDetails) {
     badge.className = "badge bg-success";
     badge.textContent = `Connecté (${window.ppaApi.latencyMs}ms)`;
-    details.innerHTML = `<strong>${window.ppaApi.serverDetails.service}</strong> v${window.ppaApi.serverDetails.version}<br>Base de données : ${window.ppaApi.serverDetails.database}`;
+    details.innerHTML = `<strong>${window.ppaApi.serverDetails.service}</strong> v${window.ppaApi.serverDetails.version || '1.0'}<br>Base de données : ${window.ppaApi.serverDetails.database}`;
   } else {
     badge.className = "badge bg-danger";
     badge.textContent = "Non accessible";
